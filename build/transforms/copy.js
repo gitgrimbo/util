@@ -6,19 +6,12 @@ define([
 	"dojo/has"
 ], function(bc, process, fileUtils, fs, has) {
 
-	function copyFileWithUtilFs(src, dest, cb) {
+	function copyFileWithFs(src, dest, cb) {
 		if (has("is-windows")) {
 			src = fileUtils.normalize(src);
 			dest = fileUtils.normalize(dest);
 		}
-		// Use no encoding, as the file may be text or binary.
-		fs.readFile(src, undefined, function(err, contents) {
-			if (err) {
-				cb(err);
-			} else {
-				fs.writeFile(dest, contents, undefined, cb);
-			}
-		});
+		fs.copyFile(src, dest, cb);
 	}
 
 	return function(resource, callback) {
@@ -32,7 +25,7 @@ define([
 
 		// grimbo
 		if (bc.useFsCopy) {
-			copyFileWithUtilFs(resource.src, resource.dest, cb);
+			copyFileWithFs(resource.src, resource.dest, cb);
 			return callback;
 		}
 
